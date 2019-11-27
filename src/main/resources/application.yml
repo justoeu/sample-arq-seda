@@ -1,0 +1,52 @@
+# Server Configuration
+server:
+  undertow:
+    worker-threads: 200
+
+spring:
+  rabbitmq:
+    addresses: localhost
+    port: 5672
+    username: seda
+    password: secret
+    virtual-host: seda
+
+management:
+  security:
+    enabled: false
+  context-path: /manager
+  info:
+    git:
+      mode: full
+
+app:
+  prop:
+    rabbit:
+      config:
+        initialInterval: 20
+        maxInterval: 40
+        multiplier: 1
+        retries: 1
+        consumers: 20
+        maxConsumers: 100
+        applyMaxAttempts: 2
+      bindings:
+        -
+          topic: app.event.initial.invoice
+          routing-key: event.initial.invoice.process
+          queue: app.event.initial.invoice.queue
+          dlx: app.event.initial.invoice.dlx
+          dlq: app.event.initial.invoice.dlq
+          declare: true
+
+endpoints:
+  env.keys-to-sanitize: password,secret,key,.​*credentials.*​,hikari.oracle.password
+  health:
+    sensitive: true
+    enabled: true
+
+info:
+  app:
+    name: Sample - Architecture SEDA
+    description: Application of PoC SEDA
+    version: 0.0.1
