@@ -2,14 +2,12 @@ package br.com.justoeu.application.gateway.message.amqp.sub;
 
 import br.com.justoeu.application.config.amqp.mapping.Queues;
 import br.com.justoeu.application.exception.RetryQueueException;
-import br.com.justoeu.application.gateway.message.amqp.BaseMessage;
 import br.com.justoeu.domain.Invoice;
 import br.com.justoeu.domain.event.EventMessage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
@@ -19,23 +17,27 @@ import org.springframework.util.StopWatch;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class InitialInvoiceProcessSub extends BaseMessage {
+public class ErrorInvoiceEventsSub {
 
     private final ObjectMapper objectMapper;
 
-    @RabbitListener(queues = Queues.INITIAL_INVOICE_PROCESS)
+    @RabbitListener(queues = Queues.ERROR_INVOICE_PROCESS)
     public void dequeue(final Message message) {
         final StopWatch stopWatch = new StopWatch();
 
-        stopWatch.start("InitialInvoiceProcess");
+        stopWatch.start("ErrorInvoiceProcess");
 
         try {
             final EventMessage<Invoice> eventMessage = this.objectMapper
                     .readValue(message.getPayload().toString(), new TypeReference<>() {});
 
-            log.debug("A new message has arrived: {}", eventMessage.getTrackingId());
-
-            eventMessage.getContent().stream().forEach(invoice -> execute(invoice) );
+            eventMessage.getContent().stream().forEach(invoice -> {
+                try {
+                    execute(invoice);
+                } catch (RuntimeException e) {
+                    throw e;
+                }
+            });
 
             log.debug("Message process {} has been finished ", eventMessage.getTrackingId());
 
@@ -48,12 +50,9 @@ public class InitialInvoiceProcessSub extends BaseMessage {
         }
     }
 
-    private void execute(final Invoice invoice) {
+    private void execute(Invoice invoice) {
 
-        log.info("Invoice Initialize - Send Event to Validate Invoice");
-        invoice.setStatus("VALIDATE-INVOICE");
+        log.info(invoice.toString());
 
-        sendNewEvent(invoice,Queues.VALIDATE_INVOICE_PROCESS);
     }
-
 }

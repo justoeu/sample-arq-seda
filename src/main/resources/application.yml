@@ -38,6 +38,41 @@ app:
           dlx: app.event.initial.invoice.dlx
           dlq: app.event.initial.invoice.dlq
           declare: true
+        -
+          topic: app.event.validate.invoice
+          routing-key: event.validate.invoice.process
+          queue: app.event.validate.invoice.queue
+          dlx: app.event.validate.invoice.dlx
+          dlq: app.event.validate.invoice.dlq
+          declare: true
+        -
+          topic: app.event.create.invoice
+          routing-key: event.create.invoice.process
+          queue: app.event.create.invoice.queue
+          dlx: app.event.create.invoice.dlx
+          dlq: app.event.create.invoice.dlq
+          declare: true
+        -
+          topic: app.event.sign.invoice
+          routing-key: event.sign.invoice.process
+          queue: app.event.sign.invoice.queue
+          dlx: app.event.sign.invoice.dlx
+          dlq: app.event.sign.invoice.dlq
+          declare: true
+        -
+          topic: app.event.sefaz.auth
+          routing-key: event.sefaz.auth.process
+          queue: app.event.sefaz.auth.queue
+          dlx: app.event.sefaz.auth.dlx
+          dlq: app.event.sefaz.auth.dlq
+          declare: true
+        -
+          topic: app.event.error.invoice
+          routing-key: app.event.error.invoice.process
+          queue: app.event.error.invoice.process.queue
+          dlx: app.event.error.invoice.dlx
+          dlq: app.event.error.invoice.dlq
+          declare: true
 
 endpoints:
   env.keys-to-sanitize: password,secret,key,.​*credentials.*​,hikari.oracle.password

@@ -1,9 +1,9 @@
 package br.com.justoeu.application.gateway.message.amqp.pub;
 
-import br.com.justoeu.config.amqp.MessageContext;
-import br.com.justoeu.config.amqp.RabbitMQPublish;
-import br.com.justoeu.config.amqp.mapping.RabbitMQConfigurationProperties;
-import br.com.justoeu.exception.QueueNotFoundException;
+import br.com.justoeu.application.config.amqp.MessageContext;
+import br.com.justoeu.application.config.amqp.RabbitMQPublish;
+import br.com.justoeu.application.config.amqp.mapping.RabbitMQConfigurationProperties;
+import br.com.justoeu.application.exception.QueueNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

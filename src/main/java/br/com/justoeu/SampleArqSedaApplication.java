@@ -3,7 +3,7 @@ package br.com.justoeu;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import static br.com.justoeu.config.jdk.warning.DisableAccessWarnings.disableAccessWarnings;
+import static br.com.justoeu.application.config.jdk.warning.DisableAccessWarnings.disableAccessWarnings;
 
 @SpringBootApplication
 public class SampleArqSedaApplication {

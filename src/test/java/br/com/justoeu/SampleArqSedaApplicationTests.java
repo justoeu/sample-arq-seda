@@ -1,6 +1,6 @@
 package br.com.justoeu;
 
-import br.com.justoeu.domain.model.InvoiceRequest;
+import br.com.justoeu.domain.InvoiceRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
