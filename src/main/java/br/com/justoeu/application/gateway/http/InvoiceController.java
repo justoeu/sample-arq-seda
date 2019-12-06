@@ -1,6 +1,7 @@
 package br.com.justoeu.application.gateway.http;
 
 import br.com.justoeu.application.gateway.message.amqp.InitialProcessEvent;
+import br.com.justoeu.domain.Invoice;
 import br.com.justoeu.domain.InvoiceRequest;
 import br.com.justoeu.domain.InvoiceRespose;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,15 @@ public class InvoiceController {
     @Autowired
     InitialProcessEvent initialProcess;
 
-    @PostMapping(value = API_CREATE_INVOICE, produces = APPLICATION_JSON_VALUE+";charset=UTF-8", consumes = APPLICATION_JSON_VALUE+";charset=UTF-8")
+    @PostMapping(value = API_CREATE_INVOICE, produces = APPLICATION_JSON_VALUE + ";charset=UTF-8", consumes = APPLICATION_JSON_VALUE + ";charset=UTF-8")
     public ResponseEntity<InvoiceRespose> createInvoice(@RequestBody InvoiceRequest req) {
 
-        String trackingID = initialProcess.startProcess(req);
-        InvoiceRespose response = InvoiceRespose.builder().id(req.getId()).referenceInvoiceId(req.getReferenceInvoiceId()).TrackingID(trackingID).build();
+        Invoice invoice = initialProcess.startProcess(req);
+        InvoiceRespose response = InvoiceRespose.builder()
+                                                .id(invoice.getId())
+                                                .referenceInvoiceId(invoice.getReferenceInvoiceId())
+                                                .TrackingID(invoice.getTrackingID())
+                                                .build();
 
         return new ResponseEntity(response, HttpStatus.ACCEPTED);
     }

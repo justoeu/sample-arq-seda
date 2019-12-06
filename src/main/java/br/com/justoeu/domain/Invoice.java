@@ -18,6 +18,13 @@ public class Invoice {
     private Long packId;
     private Long referenceInvoiceId;
     private String trackingID;
+    private Boolean sign;
 
     private List<InvoiceErrors> errors;
+
+    public Boolean isSign(){
+        return this.sign;
+    }
+
+
 }

@@ -4,6 +4,7 @@ import br.com.justoeu.application.gateway.repository.InvoiceRepository;
 import br.com.justoeu.application.gateway.repository.model.InvoiceEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -17,13 +18,17 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     @Override
     public void create(InvoiceEntity entity) {
 
-        invoices.put(entity.getId(), entity);
+        synchronized (this) {
+            invoices.put(entity.getId(), entity);
+        }
     }
 
     @Override
     public void update(InvoiceEntity entity) {
 
-        invoices.put(entity.getId(), entity);
+        synchronized (this) {
+            invoices.put(entity.getId(), entity);
+        }
     }
 
     @Override
@@ -33,9 +38,12 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             initializeDB();
         }
 
-        Map<Long, InvoiceEntity> entity = filterByValue(invoices, x -> x.getId().equals(id));
-        return entity.size() > 0 ? entity.get(id) : null;
-
+        try {
+            Map<Long, InvoiceEntity> entity = filterByValue(invoices, x -> x.getId().equals(id));
+            return entity.size() > 0 ? entity.get(id) : null;
+        } catch (ConcurrentModificationException e){
+            return null;
+        }
     }
 
     public static <K, V> Map<K, V> filterByValue(Map<K, V> map, Predicate<V> predicate) {
@@ -47,6 +55,8 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
 
 
     private void initializeDB() {
-        invoices = new HashMap<>();
+        synchronized (this) {
+            invoices = new HashMap<>();
+        }
     }
 }

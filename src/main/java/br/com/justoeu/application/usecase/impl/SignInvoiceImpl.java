@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class SignInvoiceImpl implements SignInvoice {
 
     @Override
-    public boolean sign(Invoice invoice) {
-        return false;
+    public void sign(Invoice invoice) {
+        invoice.setSign(true);
     }
 
 }

@@ -8,22 +8,30 @@ import br.com.justoeu.domain.InvoiceRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Random;
 import java.util.UUID;
 
 @Component
 public class InitialInvoiceProcessPub extends BaseMessage implements InitialProcessEvent {
 
     @Override
-    public String startProcess(final InvoiceRequest invoice) {
-        sendNewEvent(transform(invoice), Queues.INITIAL_INVOICE_PROCESS);
+    public Invoice startProcess(final InvoiceRequest invoice) {
 
-        return invoice.getTrackingID();
+        Invoice newInvoice = transform(invoice);
+
+        sendNewEvent(newInvoice, Queues.INITIAL_INVOICE_PROCESS);
+
+        return newInvoice;
     }
 
     private Invoice transform(final InvoiceRequest request){
 
         if (StringUtils.isEmpty(request.getTrackingID())){
             request.setTrackingID(UUID.randomUUID().toString());
+        }
+
+        if (request.getId() == null){
+            request.setId(new Random().nextLong());
         }
 
         return Invoice.builder().id(request.getId())
